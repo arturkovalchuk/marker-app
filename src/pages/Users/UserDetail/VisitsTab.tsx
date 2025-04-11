@@ -8,9 +8,23 @@ const VisitsTab = () => {
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
 
+  const visits = [
+    { date: 'Feb 10, 2024', service: 'Consultation', amount: '$50.00' },
+    { date: 'Jan 20, 2024', service: 'Treatment', amount: '$120.00' },
+    { date: 'Jan 5, 2024', service: 'Follow-up', amount: '$75.00' },
+    { date: 'Dec 15, 2023', service: 'Treatment', amount: '$120.00' },
+    { date: 'Dec 1, 2023', service: 'Consultation', amount: '$50.00' },
+  ];
+
+  const sortedVisits = [...visits].sort((a, b) => {
+    return sortOrder === 'asc'
+      ? new Date(a.date).getTime() - new Date(b.date).getTime()
+      : new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+
   return (
     <div>
-      <h2>Visit History</h2>
+      <h2>тесттесттест</h2>
       <div className="filters">
         <select
           value={selectedService}
@@ -35,31 +49,13 @@ const VisitsTab = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Feb 10, 2024</td>
-              <td>Consultation</td>
-              <td>$50.00</td>
-            </tr>
-            <tr>
-              <td>Jan 20, 2024</td>
-              <td>Treatment</td>
-              <td>$120.00</td>
-            </tr>
-            <tr>
-              <td>Jan 5, 2024</td>
-              <td>Follow-up</td>
-              <td>$75.00</td>
-            </tr>
-            <tr>
-              <td>Dec 15, 2023</td>
-              <td>Treatment</td>
-              <td>$120.00</td>
-            </tr>
-            <tr>
-              <td>Dec 1, 2023</td>
-              <td>Consultation</td>
-              <td>$50.00</td>
-            </tr>
+            {sortedVisits.map((visit, index) => (
+              <tr key={index}>
+                <td>{visit.date}</td>
+                <td>{visit.service}</td>
+                <td>{visit.amount}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
