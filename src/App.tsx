@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { Users, List, UserPlus, Menu, X } from 'lucide-react';
+import { Users, UserPlus, Menu, X } from 'lucide-react';
 import { UserProvider } from './context/UserContext';
 import { AddUserForm } from './components/AddUserForm';
 import { UserList } from './components/UserList';
-import { UserDetail } from './components/UserDetail';
+import UserDetail from './pages/Users/UserDetail/UserDetail';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,7 +41,7 @@ function App() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Mobile menu */}
               <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'}`}>
                 <div className="px-2 pt-2 pb-3 space-y-1">
