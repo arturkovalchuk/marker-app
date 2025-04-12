@@ -1,16 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
+import { HashRouter, BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
 import { UserProvider } from './context/UserContext';
 
+const Router = import.meta.env.PROD ? HashRouter : BrowserRouter;
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <HashRouter>
+    <Router>
       <UserProvider>
         <App />
       </UserProvider>
-    </HashRouter>
+    </Router>
   </React.StrictMode>,
 );
