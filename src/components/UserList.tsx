@@ -22,7 +22,11 @@ import {
 import { useUsers } from '../context/UserContext';
 import type { User, SortConfig, SortableUserFields } from '../types';
 
-export const UserList: React.FC = () => {
+interface UserListProps {
+  // Remove onUserClick prop since we're using navigation directly
+}
+
+export function UserList() {
   const navigate = useNavigate();
   const { state, dispatch } = useUsers();
 
@@ -330,42 +334,42 @@ export const UserList: React.FC = () => {
         {/* Filter section */}
         <div className="flex flex-col md:flex-row gap-4">
           <div className="w-full md:w-1/3">
-            <div className="flex items-center gap-2 mb-2">
-              <Search className="h-4 w-4 text-slate-400" />
+            <div className="flex items-center gap-2 mb-1 md:mb-2">
+                <Search className="h-4 w-4 text-slate-400" />
               <span className="text-sm font-medium text-slate-600">Find user</span>
-            </div>
-            <input
-              type="text"
+              </div>
+              <input
+                type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full h-10 md:h-10 px-4 py-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow"
+              className="w-full h-9 md:h-10 px-3 md:px-4 py-2 bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow"
               placeholder="Search by name, ID, email..."
-            />
-          </div>
-          <div className="relative w-full md:w-1/3" ref={tagsDropdownRef}>
-            <div className="flex items-center gap-2 mb-2">
-              <Tag className="h-4 w-4 text-slate-400" />
-              <span className="text-sm font-medium text-slate-600">Filter by tags</span>
+              />
             </div>
-            <button
+          <div className="relative w-full md:w-1/3" ref={tagsDropdownRef}>
+            <div className="flex items-center gap-2 mb-1 md:mb-2">
+              <Tag className="h-4 w-4 text-slate-400" />
+                <span className="text-sm font-medium text-slate-600">Filter by tags</span>
+              </div>
+              <button
               onClick={() => setIsTagsOpen(!isTagsOpen)}
-              className="w-full h-10 md:h-10 inline-flex items-center justify-between px-4 py-2.5 border border-slate-200 rounded-lg bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow"
+              className="w-full h-9 md:h-10 inline-flex items-center justify-between px-3 md:px-4 py-2 border border-slate-200 rounded-lg bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow"
             >
               <span>{selectedTags.length ? `${selectedTags.length} selected` : 'Select tags'}</span>
               <ChevronDown
                 className={`ml-2 h-4 w-4 transition-transform ${isTagsOpen ? 'rotate-180' : ''}`}
               />
-            </button>
+              </button>
 
             {isTagsOpen && (
               <div className="absolute left-0 right-0 mt-2 w-full rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 border border-slate-100">
-                <div className="py-2 max-h-60 overflow-y-auto">
+                <div className="py-2 max-h-60 md:max-h-60 overflow-y-auto">
                   {allTags.length > 0 ? (
                     allTags.map(tag => (
                       <button
                         key={tag}
                         onClick={() => toggleTagFilter(tag)}
-                        className={`block w-full text-left px-4 py-3 md:py-2.5 text-sm transition-colors ${
+                        className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
                           selectedTags.includes(tag)
                             ? 'bg-emerald-50 text-emerald-700 font-medium'
                             : 'text-slate-700 hover:bg-slate-50'
@@ -378,8 +382,8 @@ export const UserList: React.FC = () => {
                     <p className="px-4 py-2 text-sm text-slate-500">No tags available</p>
                   )}
                 </div>
-              </div>
-            )}
+                </div>
+              )}
           </div>
         </div>
       </div>
@@ -569,7 +573,7 @@ export const UserList: React.FC = () => {
                     </td>
                     <td className="px-3 py-4 whitespace-nowrap text-sm font-medium select-text">
                       <span className="text-emerald-600 hover:text-emerald-800 hover:underline">
-                        {user.name}
+                  {user.name}
                       </span>
                     </td>
                     <td className="px-3 py-4 whitespace-nowrap text-sm text-slate-500 select-text">
@@ -639,6 +643,19 @@ export const UserList: React.FC = () => {
 
           {/* Mobile View */}
           <div className={`${isMobileView ? 'block' : 'hidden'}`}>
+            {selectedRows.length > 0 && (
+              <div className="flex flex-col px-4 py-3 bg-slate-50 border-b border-slate-200">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-slate-600">Selected: {selectedRows.length}</span>
+                  <input
+                    type="checkbox"
+                    checked={selectAll}
+                    onChange={toggleSelectAll}
+                    className="h-5 w-5 text-emerald-600 focus:ring-emerald-500 border-slate-300 rounded"
+                  />
+                </div>
+              </div>
+            )}
             <ul className="divide-y divide-slate-200">
               {paginatedUsers.map(user => (
                 <li
@@ -647,7 +664,7 @@ export const UserList: React.FC = () => {
                   onClick={() => navigate(`/user/${user.id}`)}
                 >
                   <div className="flex flex-col space-y-4">
-                    <div className="flex justify-between items-start">
+                    <div className="grid grid-cols-[1fr_auto] items-start gap-4">
                       <div className="flex items-center">
                         <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mr-3">
                           <UserIcon className="w-5 h-5" />
@@ -670,7 +687,7 @@ export const UserList: React.FC = () => {
                       </div>
 
                       <div
-                        className="flex items-center space-x-3"
+                        className="grid grid-cols-[auto_auto_auto] items-center gap-2"
                         onClick={e => e.stopPropagation()}
                       >
                         <button
@@ -802,89 +819,15 @@ export const UserList: React.FC = () => {
 
       {/* Pagination */}
       {filteredUsers.length > 0 && totalPages > 0 && (
-        <div className="flex items-center justify-between">
+        <div>
           {/* Mobile pagination */}
-          <div className="flex-1 flex justify-between sm:hidden">
-            <div className="w-full flex items-center justify-between">
-              <button
-                onClick={goToPrevPage}
-                disabled={currentPage === 1 || totalPages === 1}
-                className={`relative inline-flex items-center justify-center p-2 h-10 border border-slate-200 text-sm font-medium rounded-md ${
-                  currentPage === 1 || totalPages === 1
-                    ? 'text-slate-300 bg-white cursor-not-allowed'
-                    : 'text-slate-700 bg-white hover:bg-slate-50'
-                }`}
-                aria-label="Previous page"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-slate-600 whitespace-nowrap">
-                  {window.innerWidth < 360
-                    ? `${currentPage}/${totalPages}`
-                    : `Page ${currentPage} of ${totalPages}`}
-                </span>
-                <span className="text-slate-400">|</span>
-                <div className="flex items-center">
-                  <span className="text-sm text-slate-600 mr-1">Rows:</span>
-                  <select
-                    value={itemsPerPage}
-                    onChange={e => changeItemsPerPage(Number(e.target.value))}
-                    className="h-8 px-1 py-0 border border-slate-200 rounded text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                  >
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                  </select>
-                </div>
-              </div>
-
-              <button
-                onClick={goToNextPage}
-                disabled={currentPage === totalPages || totalPages === 1}
-                className={`relative inline-flex items-center justify-center p-2 h-10 border border-slate-200 text-sm font-medium rounded-md ${
-                  currentPage === totalPages || totalPages === 1
-                    ? 'text-slate-300 bg-white cursor-not-allowed'
-                    : 'text-slate-700 bg-white hover:bg-slate-50'
-                }`}
-                aria-label="Next page"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-          {/* Desktop pagination */}
-          <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-            <div className="flex items-center gap-2">
-              <p className="text-sm text-slate-500">
-                Showing <span className="font-medium">{indexOfFirstItem + 1}</span> to{' '}
-                <span className="font-medium">
-                  {indexOfLastItem > filteredUsers.length ? filteredUsers.length : indexOfLastItem}
-                </span>{' '}
-                of <span className="font-medium">{filteredUsers.length}</span> results
-              </p>
-              <span className="mx-4 text-sm text-slate-400">|</span>
-              <span className="text-sm text-slate-500">Rows:</span>
-              <select
-                value={itemsPerPage}
-                onChange={e => changeItemsPerPage(Number(e.target.value))}
-                className="h-8 px-2 py-0 border border-slate-200 rounded text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              >
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-              </select>
-            </div>
-            <div>
-              <nav
-                className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-                aria-label="Pagination"
-              >
+          <div className="sm:hidden">
+            <div className="flex flex-col gap-4 items-center">
+              <nav className="flex gap-1" aria-label="Pagination">
                 <button
                   onClick={goToPrevPage}
                   disabled={currentPage === 1}
-                  className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-slate-200 text-sm font-medium ${
+                  className={`relative inline-flex items-center px-2 py-2 rounded-md border text-sm font-medium ${
                     currentPage === 1
                       ? 'text-slate-300 bg-white cursor-not-allowed'
                       : 'text-slate-500 bg-white hover:bg-slate-50'
@@ -911,7 +854,7 @@ export const UserList: React.FC = () => {
                     <button
                       key={pageNum}
                       onClick={() => goToPage(pageNum)}
-                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                      className={`relative inline-flex items-center px-3 py-2 border text-sm font-medium rounded-md ${
                         currentPage === pageNum
                           ? 'z-10 bg-emerald-50 border-emerald-500 text-emerald-600'
                           : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
@@ -925,7 +868,7 @@ export const UserList: React.FC = () => {
                 <button
                   onClick={goToNextPage}
                   disabled={currentPage === totalPages}
-                  className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-slate-200 text-sm font-medium ${
+                  className={`relative inline-flex items-center px-2 py-2 rounded-md border text-sm font-medium ${
                     currentPage === totalPages
                       ? 'text-slate-300 bg-white cursor-not-allowed'
                       : 'text-slate-500 bg-white hover:bg-slate-50'
@@ -935,10 +878,102 @@ export const UserList: React.FC = () => {
                   <ChevronRight className="h-4 w-4" />
                 </button>
               </nav>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-slate-500">Rows per page:</span>
+                <select
+                  value={itemsPerPage}
+                  onChange={e => changeItemsPerPage(Number(e.target.value))}
+                  className="h-8 px-2 py-0 border border-slate-200 rounded text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                >
+                  <option value={10}>10</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                </select>
+              </div>
             </div>
           </div>
-        </div>
+
+          {/* Desktop pagination */}
+          <div className="hidden sm:flex sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-slate-500">
+                Showing <span className="font-medium">{indexOfFirstItem + 1}</span> to{' '}
+                <span className="font-medium">
+                  {indexOfLastItem > filteredUsers.length ? filteredUsers.length : indexOfLastItem}
+                </span>{' '}
+                of <span className="font-medium">{filteredUsers.length}</span> results
+              </p>
+              <span className="mx-4 text-sm text-slate-400">|</span>
+              <span className="text-sm text-slate-500">Rows:</span>
+              <select
+                value={itemsPerPage}
+                onChange={e => changeItemsPerPage(Number(e.target.value))}
+                className="h-8 px-2 py-0 border border-slate-200 rounded text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+              </select>
+            </div>
+            <nav className="flex gap-1" aria-label="Pagination">
+              <button
+                onClick={goToPrevPage}
+                disabled={currentPage === 1}
+                className={`relative inline-flex items-center px-2 py-2 rounded-md border text-sm font-medium ${
+                  currentPage === 1
+                    ? 'text-slate-300 bg-white cursor-not-allowed'
+                    : 'text-slate-500 bg-white hover:bg-slate-50'
+                }`}
+              >
+                <span className="sr-only">Previous</span>
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+
+              {/* Page numbers */}
+              {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
+                let pageNum;
+                if (totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => goToPage(pageNum)}
+                    className={`relative inline-flex items-center px-3 py-2 border text-sm font-medium rounded-md ${
+                      currentPage === pageNum
+                        ? 'z-10 bg-emerald-50 border-emerald-500 text-emerald-600'
+                        : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+
+              <button
+                onClick={goToNextPage}
+                disabled={currentPage === totalPages}
+                className={`relative inline-flex items-center px-2 py-2 rounded-md border text-sm font-medium ${
+                  currentPage === totalPages
+                    ? 'text-slate-300 bg-white cursor-not-allowed'
+                    : 'text-slate-500 bg-white hover:bg-slate-50'
+                }`}
+              >
+                <span className="sr-only">Next</span>
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </nav>
+          </div>
+      </div>
       )}
     </div>
   );
-};
+}

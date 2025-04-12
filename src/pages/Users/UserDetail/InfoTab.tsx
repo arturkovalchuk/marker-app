@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Mail, Phone, Tag, FileText, BarChart2, Plus, X } from 'lucide-react';
+import { useState } from 'react';
+import { Mail, Phone, FileText, BarChart2, Plus, X } from 'lucide-react';
 import { useUsers } from '../../../context/UserContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
-const InfoTab = () => {
-  const { userId } = useParams<{ userId: string }>();
-  const { dispatch, getUserById } = useUsers();
+export default function InfoTab({ userId }: { userId: string }) {
+  const { state, dispatch } = useUsers();
   const [newTag, setNewTag] = useState('');
   const [newNote, setNewNote] = useState('');
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const user = userId ? getUserById(userId) : undefined;
+  const user = userId ? state.users.find(u => u.id === userId) : undefined;
 
   if (!user) {
     return null;
@@ -125,7 +125,7 @@ const InfoTab = () => {
       <div className="bg-white shadow-sm rounded-xl p-4 md:p-6 border border-slate-200">
         <h2 className="text-lg md:text-xl font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-100">
           <span className="flex items-center">
-            <Tag className="h-5 w-5 mr-2 text-slate-400" />
+            <span className="h-5 w-5 mr-2 text-slate-400" />
             Preferences / Tags
           </span>
         </h2>
@@ -203,6 +203,4 @@ const InfoTab = () => {
       </div>
     </div>
   );
-};
-
-export default InfoTab;
+}

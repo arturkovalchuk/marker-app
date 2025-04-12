@@ -209,7 +209,7 @@ export function AddUserForm() {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2 min-h-[2rem]">
+            <div className={`flex flex-wrap gap-2 ${selectedTags.length > 0 ? 'min-h-[2rem] mb-6' : 'min-h-0 mb-0'} transition-all duration-200`}>
               {selectedTags.map(tag => (
                 <span
                   key={tag}
@@ -229,7 +229,7 @@ export function AddUserForm() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t border-slate-100">
+          <div className={`flex flex-col sm:flex-row gap-2 pt-4 border-t border-slate-100 ${selectedTags.length === 0 ? 'mt-2' : 'mt-0'} transition-all duration-200`}>
             <button
               type="submit"
               className="w-full sm:w-auto inline-flex whitespace-nowrap items-center justify-center h-10 px-6 py-0 border border-transparent rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors"
