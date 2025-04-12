@@ -12,4 +12,16 @@ export default defineConfig({
     host: true, // Enable local network access
     port: 3000,
   },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+        },
+      },
+    },
+  },
 });
