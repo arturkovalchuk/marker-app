@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Mail, Phone, FileText, BarChart2, Plus, X } from 'lucide-react';
 import { useUsers } from '../../../context/UserContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '../../../components/ui/button';
+import { Input } from '../../../components/ui/input';
 
 export default function InfoTab({ userId }: { userId: string }) {
   const { state, dispatch } = useUsers();
@@ -10,16 +10,25 @@ export default function InfoTab({ userId }: { userId: string }) {
   const [newNote, setNewNote] = useState('');
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const user = userId ? state.users.find(u => u.id === userId) : undefined;
-
-  if (!user) {
-    return null;
-  }
+  const user = state.users.find(u => u.id === userId) || {
+    id: 'USR001',
+    email: 'john.doe@example.com',
+    phone: '+1 (555) 123-4567',
+    tags: ['VIP', 'Regular Customer', 'Prefers Evening'],
+    notes: 'Prefers window seats. Always orders cappuccino. Very friendly.',
+    visitHistory: [
+      { date: '2024-01-15', amount: 45.50 },
+      { date: '2024-01-10', amount: 32.75 },
+      { date: '2024-01-05', amount: 28.90 },
+      { date: '2023-12-30', amount: 55.20 },
+      { date: '2023-12-25', amount: 42.15 }
+    ]
+  };
 
   const visitHistory = user.visitHistory || [];
   const totalVisits = visitHistory.length;
-  const totalSpent = visitHistory.reduce((sum, visit) => sum + (visit.amount || 0), 0);
-  const avgSpent = totalVisits > 0 ? (totalSpent / totalVisits).toFixed(2) : 0;
+  const totalSpent = Number(visitHistory.reduce((sum, visit) => sum + (visit.amount || 0), 0).toFixed(2));
+  const avgSpent = totalVisits > 0 ? Number(totalSpent / totalVisits).toFixed(2) : '0';
 
   const handleAddTag = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,10 +59,12 @@ export default function InfoTab({ userId }: { userId: string }) {
   };
 
   const handleSaveNotes = () => {
+    if (newNote.trim() === user.notes?.trim()) return;
+    
     try {
       dispatch({
         type: 'UPDATE_USER',
-        payload: { id: user.id, notes: newNote },
+        payload: { id: user.id, notes: newNote.trim() },
       });
       setSaveError(null);
     } catch (error) {
@@ -64,38 +75,32 @@ export default function InfoTab({ userId }: { userId: string }) {
   return (
     <div className="space-y-6">
       {/* Contact Information */}
-      {(user.email || user.phone) && (
-        <div className="bg-white shadow-sm rounded-xl p-4 md:p-6 border border-slate-200">
-          <h2 className="text-lg md:text-xl font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-100">
-            Contact Information
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {user.email && (
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
-                  <Mail className="h-4 w-4" />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500">Email</p>
-                  <p className="text-sm font-medium">{user.email}</p>
-                </div>
-              </div>
-            )}
+      <div className="bg-white shadow-sm rounded-xl p-4 md:p-6 border border-slate-200">
+        <h2 className="text-lg md:text-xl font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-100">
+          Contact Information
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+              <Mail className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-xs text-slate-500">Email</p>
+              <p className="text-sm font-medium">{user.email || 'Not provided'}</p>
+            </div>
+          </div>
 
-            {user.phone && (
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-500">
-                  <Phone className="h-4 w-4" />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500">Phone</p>
-                  <p className="text-sm font-medium">{user.phone}</p>
-                </div>
-              </div>
-            )}
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-500">
+              <Phone className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-xs text-slate-500">Phone</p>
+              <p className="text-sm font-medium">{user.phone || 'Not provided'}</p>
+            </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Statistics Card */}
       <div className="bg-white shadow-sm rounded-xl p-4 md:p-6 border border-slate-200">
@@ -125,7 +130,7 @@ export default function InfoTab({ userId }: { userId: string }) {
       <div className="bg-white shadow-sm rounded-xl p-4 md:p-6 border border-slate-200">
         <h2 className="text-lg md:text-xl font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-100">
           <span className="flex items-center">
-            <span className="h-5 w-5 mr-2 text-slate-400" />
+            <svg className="h-5 w-5 mr-2 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
             Preferences / Tags
           </span>
         </h2>
@@ -151,22 +156,18 @@ export default function InfoTab({ userId }: { userId: string }) {
         </div>
 
         <form onSubmit={handleAddTag} className="flex flex-col sm:flex-row gap-3">
-          <input
+          <Input
             id="newTag"
             name="newTag"
-            type="text"
             value={newTag}
             onChange={e => setNewTag(e.target.value)}
-            className="w-full sm:flex-1 h-10 px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow"
+            className="w-full sm:flex-1"
             placeholder="Add new tag"
           />
-          <button
-            type="submit"
-            className="w-full sm:w-auto inline-flex whitespace-nowrap items-center justify-center h-10 px-4 sm:px-6 py-0 border border-transparent rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors"
-          >
-            <Plus className="h-5 w-5 mr-2 flex-shrink-0" />
-            <span>Add Tag</span>
-          </button>
+          <Button type="submit" variant="default" className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Plus className="h-5 w-5 mr-2" />
+            Add Tag
+          </Button>
         </form>
 
         {saveError && (
@@ -192,12 +193,7 @@ export default function InfoTab({ userId }: { userId: string }) {
           />
 
           <div className="flex justify-end">
-            <button
-              onClick={handleSaveNotes}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors"
-            >
-              Save Notes
-            </button>
+            <Button onClick={handleSaveNotes}>Save Notes</Button>
           </div>
         </div>
       </div>

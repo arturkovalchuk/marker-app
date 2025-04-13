@@ -6,13 +6,14 @@ export interface User {
   registrationDate?: string;
   notes?: string;
   tags: string[];
-  visits: Visit[];
+  visitHistory: Visit[];
 }
 
 export interface Visit {
   id: string;
   date: string;
-  duration: number;
+  service: string;
+  amount: number;
 }
 
 export interface UserState {
